@@ -1,0 +1,30 @@
+{
+  "imports": {
+    "oak": "https://deno.land/x/oak@v12.5.0/mod.ts",
+    "mongoose": "npm:mongoose@7.3.0",
+    "openai": "npm:openai@3.3.0",
+    "fast-json-patch": "npm:fast-json-patch@3.1.1",
+    "djwt": "https://deno.land/x/djwt@v2.8/mod.ts",
+    "minio": "npm:minio@7.1.1",
+    "http": "https://deno.land/std@0.188.0/http/mod.ts",
+    "redis": "https://deno.land/x/redis@v0.30.0/mod.ts",
+    "langchain": "npm:langchain@0.0.105",
+    "dotenv": "https://deno.land/std@0.193.0/dotenv/load.ts",
+
+    // Internal modules
+    "reflect-metadata": "./reflect-metadata.ts",
+    "helpers/": "./helpers/",
+    "middlewares": "./middlewares/mod.ts",
+    "controllers": "./controllers/mod.ts",
+    "models": "./models/mod.ts"
+  },
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "types": ["./types.d.ts"]
+  },
+  "tasks": {
+    "dev": "deno run --allow-net --allow-read --allow-env --allow-sys --allow-write --watch main.ts",
+    "start": "deno run --allow-net --allow-read --allow-env --allow-sys --allow-write main.ts",
+    "genkey": "deno run --allow-read --allow-write scripts/generate_key.ts"
+  }
+}

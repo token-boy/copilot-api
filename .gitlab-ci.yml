@@ -1,0 +1,38 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  CONTAINER_IMAGE: $CI_PROJECT_NAME:$CI_COMMIT_SHA
+  CONTAINER_NAME: $CI_PROJECT_NAME
+
+build:
+  stage: build
+  only: 
+    - main
+  tags:
+    - ci
+  script:
+    - docker build --tag $CONTAINER_IMAGE .
+
+deploy:
+  stage: deploy
+  only:
+    - main
+  tags:
+    - ci
+  script:
+    - docker stop $CONTAINER_NAME || true
+    - docker rm --force $CONTAINER_NAME || true
+    - docker run --detach
+      --name=$CONTAINER_NAME
+      --network=main
+      --label="traefik.enable=true"
+      --label="traefik.http.routers.api.rule=Host(\`api.zhiren.xyz\`)"
+      --label="traefik.http.routers.api.tls.certResolver=cloudflare"
+      --label="traefik.http.routers.api-http.rule=Host(\`api.zhiren.xyz\`)"
+      --label="traefik.http.routers.api-http.middlewares=redirect-https@file"
+      --volume=/etc/localtime:/etc/localtime:ro
+      --volume=/var/lib/api/.env:/app/.env
+      --volume=/var/lib/api/key:/app/key
+      $CONTAINER_IMAGE
